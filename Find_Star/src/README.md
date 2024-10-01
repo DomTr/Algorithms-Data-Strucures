@@ -1,5 +1,5 @@
-** Find a star problem ** <br />
-A star is a person ps who is known by every other person and does not know any other p. There can only be one star in a graph. Not all graphs contain stars.
+# Find a star problem <br />
+A star is a person ps who is known by every other person and does not know any other p. There can only be one star in a graph. Not all graphs contain stars. <br />
 Example: <br />
 1 -> 2, 2 -> 3, 3 -> 1 does not contain a star because no person is known by any other person and everyone knows at least one person <br />
 1 -> 2, 3 -> 2 contains a star 2 <br />
