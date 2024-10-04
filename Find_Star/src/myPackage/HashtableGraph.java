@@ -3,7 +3,7 @@ package myPackage;
 import java.util.Hashtable;
 import java.util.HashSet;
 
-public class HashtableGraph extends Graph{
+public class HashtableGraph extends Graph {
 	private Hashtable<Integer, HashSet<Integer>> graph;
 	public HashtableGraph() {
 		graph = new Hashtable<Integer, HashSet<Integer>>();
@@ -41,6 +41,8 @@ public class HashtableGraph extends Graph{
 		// TODO Auto-generated method stub
 		return i;
 	}
-	
+	public HashSet<Integer> getNeighbours(int n) {
+		return graph.getOrDefault(n, new HashSet<Integer>());
+	}
 }
 
