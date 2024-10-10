@@ -1,6 +1,7 @@
 import java.util.Scanner;
 public class BubbleSort {
 	// A simple Bubble Sort algorithm. Run-time O(n^2)
+	// In-place
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("Length of the array: ");
