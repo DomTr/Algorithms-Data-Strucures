@@ -26,16 +26,62 @@ public class MergeSort {
 	}
 	public static void mergeSort(int[] a, int l, int r) {
 		if (l < r) {
+	      int m = l + (r-l)/2;
+	      mergeSort(a, l, m);
+	      mergeSort(a, m+1, r);
+	      merge(a, l, m, r);
+	    }
+	    return;
+	}
+	public static void merge(int[] a, int l, int m, int r) {
+		int leftSize = m - l + 1;
+	    int rightSize = r - (m+1) + 1;
+	    int[] left = new int[leftSize];
+	    int[] right = new int[rightSize];
+	    
+	    for (int i = 0, leftP = l; i < leftSize; i++, leftP++) {
+	        left[i] = a[leftP];
+	    }
+	    for (int i = 0, rightP = m+1; i < rightSize; i++, rightP++) {
+	        right[i] = a[rightP];
+	    }
+	      
+	    int i = 0, j = 0, k = l;
+	    while (i < leftSize && j < rightSize) {
+	      if (left[i] < right[j]) {
+	        a[k] = left[i];
+	        i++;        
+	       }
+	      else 
+	        {
+	        a[k] = right[j];
+	        j++;
+	      }
+	      k++;
+       }
+       while(i < leftSize) {
+          a[k] = left[i];
+          k++;
+          i++;
+        }
+        while(j < rightSize) {
+          a[k] = right[j];
+          k++;
+          j++;
+        }
+	}
+	public static void mergeSort1(int[] a, int l, int r) {
+		if (l < r) {
 			int m = l + (r-l)/2;
 			mergeSort(a, l, m);
 			mergeSort(a, m+1, r);
-			int[]b = merge(a, l, m, r);
+			int[]b = merge1(a, l, m, r);
 			for (int i = l, k = 0; i <= r; i++, k++) {
 				a[i] = b[k];
 			}
 		}
 	}
-	public static int[] merge(int[] a, int l, int m, int r) {
+	public static int[] merge1(int[] a, int l, int m, int r) {
 		int[] b = new int[a.length];
 		int i = l, j = m+1, k = 0;
 		while(i <= m && j <= r) {
