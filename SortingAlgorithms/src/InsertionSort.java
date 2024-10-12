@@ -22,7 +22,7 @@ public class InsertionSort {
 		for (int i = 0; i < n; i++) {
 			a[i] = sc.nextInt();
 		}
-		insertionSort(a, n);
+		insertionSort2(a, n);
 		printArray(a, n);
 		sc.close();
 	}
@@ -35,6 +35,20 @@ public class InsertionSort {
 				a[k] = x;
 			}
 		}
+	}
+	public static void insertionSort2(int[] a, int n) {
+		for (int i = 1; i < n; i++) {
+			int j = i;
+			while (j > 0 && a[j-1] > a[j]) {
+				swap(a, j, j-1);
+				j--;
+			}
+		}
+	}
+	public static void swap(int[] a, int i, int j) {
+		int tmp = a[i];
+		a[i] = a[j];
+		a[j] = tmp;
 	}
 	public static void push(int[] a, int k, int j) {
 		for (int i = j; i >= k+1; i--) {
