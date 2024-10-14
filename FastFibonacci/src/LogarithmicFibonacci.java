@@ -14,8 +14,14 @@ public class LogarithmicFibonacci {
 		if (n == 0) return new long[2][2];
 		if (n == 1) return init;
 		if (n == 2) return multiply(init, init);
-		if (n%2 == 0) return multiply(fastFib(n/2), fastFib(n/2));
-		else return multiply(init, multiply(fastFib((n-1)/2), fastFib((n-1)/2)));
+		if (n%2 == 0) {
+			long[][] tmp = fastFib(n/2);
+			return multiply(tmp, tmp);
+		}
+		else {
+			long[][] tmp = fastFib((n-1)/2);
+			return multiply(init, multiply(tmp, tmp));
+		}
 	}
 	public static void main(String[] args) {
 		/* F_0 = 0
