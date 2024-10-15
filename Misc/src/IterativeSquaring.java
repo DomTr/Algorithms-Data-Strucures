@@ -1,6 +1,9 @@
 import java.util.Scanner;
 public class IterativeSquaring {
-	
+	/*
+	 *  Calculates a^n, where a is a double and n is an integer (can also be negative) in O(log n) time.
+	 *  For 0^0 it prints 1.
+	 */
 	public static double calc(double a, int n) {
 		if (n < 0) {
 			return calc(1/a, -n);
