@@ -46,5 +46,35 @@ public class FindPivotOfRotatedSorted {
 		
 		return l;
 	}
-
+	public static int find2(int[] a) {
+		int l = 0, r = a.length, n = a.length;
+		while (r-l > 1) {
+			int m = l + (r-l)/2;
+			if (a[m] > a[n]) {
+				l = m;
+			}
+			else {
+				r = m;
+			}
+		}
+		return l;
+	}
+	public static int findKInSortedRotatedArray(int[] a, int x) {
+		int k = find2(a); //pivot
+		int l = 0, r = k+1, n = a.length;
+		if (x < a[l]) { // in the second line
+			l = k+1;
+			r = n;
+		}
+		while (r - l > 1) {
+			int m = l + (r-l)/2;
+			if (a[m] <= x) {
+				l = m;
+			}
+			else {
+				r = m;
+			}
+		}
+		return l;
+	}
 }
