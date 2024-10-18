@@ -1,6 +1,10 @@
 import java.util.Scanner;
 public class HeapSort {
-
+	
+	/*
+	 * Sorts array in O(n log n) time.
+	 * The reason why HeapSort is not so frequently used is because it has worse constants compared to merge sort or quick sort
+	 */
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		System.out.print("Length of the array: ");
@@ -44,7 +48,7 @@ public class HeapSort {
 	}
 	
 	public static int extractMax(int[] H, int n) {
-		int ans = H[0]; //Wurzel
+		int ans = H[0]; // Root
 		H[0] = H[n-1];
 		n--;
 		int currInd = 0;
