@@ -30,10 +30,35 @@ public class Quicksort {
 	}
 	public static void quicksort(int[] a, int l, int r) {
 		if (l < r) {
-			int k = partition(a, l, r);
+			int k = partitionInPlace(a, l, r);
 			quicksort(a, l, k-1);
 			quicksort(a, k+1, r);
 		}
+	}
+	public static int partitionInPlace(int[] a, int l, int r) {
+		// Find pivot and swap it to the right place
+		// Have left and right pointer. Find a suitable pair (i, j) with a[i] > p && a[j] <= p to swap with
+		int i = l;
+		int j = r-1;
+		int p = a[r];
+		while (i <= j) {
+			while (i < r && a[i] <= p) {
+				i++;
+			}
+			while (j >= l && a[j] > p) {
+				j--;
+			}
+			if (i < j) {
+				swap(a, i, j);
+			}
+		}
+		swap(a, i, r);
+		return i;
+	}
+	public static void swap(int[] a, int i, int j) {
+		int tmp = a[i];
+		a[i] = a[j];
+		a[j] = tmp;
 	}
 	public static int partition(int[] a, int l, int r) {
 		int p = a[r]; // choosing the last element as pivot
