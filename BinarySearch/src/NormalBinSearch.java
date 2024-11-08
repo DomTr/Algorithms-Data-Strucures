@@ -1,6 +1,7 @@
 
 public class NormalBinSearch {
-	public static int binSearch(int x, int n, int[] a) {
+	public static int binSearch(int x, int[] a) {
+		int n = a.length;
 		int l = 0;
 		int r = n-1;
 		boolean found = false;
