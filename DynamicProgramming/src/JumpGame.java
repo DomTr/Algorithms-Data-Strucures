@@ -70,6 +70,6 @@ public class JumpGame {
 				M[k] = Math.max(M[k], i+a[i]);
 			}
 		}
-		return M[k];
+		return k; // answer is k
 	}
 }
