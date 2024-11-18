@@ -1,5 +1,5 @@
 
-public class Stack<T> {
+public class Stack<T extends Comparable<T>> {
 	private LinkedListNode<T> head;
 	
 	public Stack(T elem) {
