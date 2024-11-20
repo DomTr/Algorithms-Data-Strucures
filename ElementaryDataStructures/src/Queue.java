@@ -1,5 +1,5 @@
 
-public class Queue<T> {
+public class Queue<T extends Comparable<T>> {
 	private LinkedListNode<T> head;
 	private LinkedListNode<T> tail;
 	public Queue (T elem) {
