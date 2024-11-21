@@ -1,5 +1,5 @@
 
-public class LinkedListNode<T> {
+public class LinkedListNode<T extends Comparable<T>> {
 	private T elem;
 	private LinkedListNode<T> next;
 	
@@ -22,7 +22,7 @@ public class LinkedListNode<T> {
 		}
 		return tmp.elem;
 	}
-	public void append(LinkedListNode<T> node) { // coule go to infinite loop if there is a cycle between list nodes
+	public void append(LinkedListNode<T> node) { // could go to infinite loop if there is a cycle between list nodes
 		LinkedListNode<T> tmp = this;
 		while (tmp.next != null) {
 			tmp = tmp.next;
@@ -53,6 +53,76 @@ public class LinkedListNode<T> {
 		}
 		return ans;
 	}
+	
+	public LinkedListNode<T> sortList(LinkedListNode<T> head) {
+	     if (head == null || head.next == null) {
+	       return head;
+	     }
+	     LinkedListNode<T> slow = head, fast = head.next;
+	     while (fast != null && fast.next != null) {
+	       slow = slow.next;
+	       fast = fast.next.next;
+	     }
+	     LinkedListNode<T> mid = slow.next;
+	     slow.next = null;
+	     
+	     LinkedListNode<T> leftHalf = sortList(head);
+	     LinkedListNode<T> rightHalf = sortList(mid);
+	     return merge(leftHalf, rightHalf);
+	}
+	
+	public LinkedListNode<T>  merge( LinkedListNode<T>  leftHalf, LinkedListNode<T>  rightHalf) {
+		 LinkedListNode<T>  dummyHead = new LinkedListNode<T> ();
+		 LinkedListNode<T>  current = dummyHead;
+	     while (leftHalf != null && rightHalf != null) {
+	       if (leftHalf.elem.compareTo(rightHalf.elem) < 0) {
+	         current.next = leftHalf; 
+	         leftHalf = leftHalf.next;
+	       } else {
+	         current.next = rightHalf;
+	         rightHalf = rightHalf.next;
+	       }
+	       current = current.next;
+	     }
+	     if (leftHalf == null) {
+	       current.next = rightHalf;
+	     }
+	     else if (rightHalf == null) {
+	       current.next = leftHalf;
+	     }
+	     return dummyHead.next;
+	}
+	
+	public LinkedListNode<T> bubbleSort(LinkedListNode<T> head) {
+		LinkedListNode<T> tmp;
+	     boolean sorted = false;
+	     while (!sorted) {
+	       sorted = true;
+	       tmp = head;
+	       while (tmp != null && tmp.next != null) {
+	         if (tmp.elem.compareTo(tmp.next.elem) > 0) {
+	           sorted = false;
+	           swapValues(tmp, tmp.next);
+	         }
+	         tmp = tmp.next;
+	       }
+	     }
+	     return head;
+	   }
+	   public void swapValues(LinkedListNode<T> a, LinkedListNode<T> b) {
+	     T tmp = a.elem;
+	     a.elem = b.elem;
+	     b.elem = tmp;
+	   }
+	   public int getLength(LinkedListNode<T> head) {
+	     int ans = 0;
+	     LinkedListNode<T> tmp = head;
+	     while (tmp != null) {
+	       ans++;
+	       tmp = tmp.next;
+	     }
+	     return ans;
+	   }
 	public T getElem() {
 		return elem;
 	}
