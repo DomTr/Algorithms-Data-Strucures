@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class SSSP {
@@ -63,10 +65,50 @@ public class SSSP {
 		return d;
 	}
 	/*
-	 * Dijkstra's algorithm idea: sort nodes according to distance from start
+	 * Dijkstra's algorithm idea: sort nodes according to distance from start.
+	 * Complexity: O(E log V)
 	 */
 	static int[] dijkstra (ArrayList<ArrayList<Integer>> g, int[][] costs, int n, int start) {
-		return null;
+		PriorityQueue<Pair> pq = new PriorityQueue<>();
+		HashSet<Integer> settled = new HashSet<>();
+		int[] distances = new int[n];
+		for (int i = 0; i < n; i++) {
+			distances[i] = Integer.MAX_VALUE;
+		}
+		
+		distances[start] = 0;
+		pq.add(new Pair(start, 0));
+		
+		while (settled.size() < n) {
+			if (pq.isEmpty()) break;
+			int u = pq.poll().to;
+			if (settled.contains(u)) continue;
+			
+			settled.add(u);
+			for (int v : g.get(u)) {
+				if (!settled.contains(v)) {
+					int edgeCost = costs[u][v];
+					int newDist = edgeCost + distances[u];
+					if (newDist >= 0 && newDist < distances[v]) {
+						distances[v] = newDist;
+					}
+					pq.add(new Pair(v, distances[v]));
+				}
+			}
+		}
+		return distances;
+	}
+	static class Pair implements Comparable<Pair>{
+		int to;
+		int distance;
+		public Pair(int to, int distance) {
+			this.to = to;
+			this.distance = distance;
+		}
+		@Override
+		public int compareTo(Pair other) {
+			return this.distance - other.distance;
+		}
 	}
 	
 }
