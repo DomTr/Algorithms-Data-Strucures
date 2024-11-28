@@ -5,7 +5,7 @@ public class APSP {
 	 * Runtime: O(n^3)
 	 * Space:   O(n^2)
 	 */
-	public int[][] bellmanFord(int n, int[][] w) {
+	public int[][] floydWarshall(int n, int[][] w) {
 		int[][] dist = new int[n][n];
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
