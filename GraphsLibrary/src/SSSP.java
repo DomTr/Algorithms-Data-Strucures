@@ -81,7 +81,7 @@ public class SSSP {
 		
 		while (settled.size() < n) {
 			if (pq.isEmpty()) break;
-			int u = pq.poll().to;
+			int u = pq.poll().node;
 			if (settled.contains(u)) continue;
 			
 			settled.add(u);
@@ -98,11 +98,64 @@ public class SSSP {
 		}
 		return distances;
 	}
+	
+	/*
+	 * Bellman Ford algorithm: assuming there is no negative cycle, finds shortest paths to all vertices from starting node start.
+	 * Works even when edges are negative.
+	 * 
+	 * If there is a negative cycle, then it will be found in the n-th iteration, if distance[u] for some node u becomes smaller
+	 * 
+	 * Run-time: O(n*m)
+	 */
+	static int[] bellmanFord(int start, int n, ArrayList<ArrayList<Pair>> g) {
+		ArrayList<ArrayList<Pair>> parentList = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			parentList.add(new ArrayList<>());
+		}
+		for (int i = 0; i < n; i++) {
+			for (Pair edge : g.get(i)) {
+				parentList.get(edge.node).add(new Pair(i, edge.distance));
+			}
+		}
+		int[] distance = new int[n];
+		int[] predecessor = new int[n];
+		for (int i = 0; i < n; i++) {
+			distance[i] = Integer.MAX_VALUE;
+			predecessor[i] = -1;
+		}
+		
+		distance[start] = 0;
+		for (int i = 0; i < n-1; i++) {
+			for (int u = 0; u < n; u++) {
+				for (Pair p : parentList.get(u)) {
+					int par = p.node;
+					int cost = p.distance;
+					if (distance[par] != Integer.MAX_VALUE && distance[par] + cost < distance[u]) {
+						distance[u] = distance[par] + cost;
+						predecessor[u] = par;
+					}
+				}
+			}
+		}
+		// repeat the same procedure n-th time. If some distance gets smaller, then there must be a negative cycle.s
+		for (int u = 0; u < n; u++) {
+			for (Pair p : parentList.get(u)) {
+				int par = p.node;
+				int cost = p.distance;
+				if (distance[par] != Integer.MAX_VALUE && distance[par] + cost < distance[u]) {
+					// There is a negative cycle
+					return null;
+				}
+			}
+		}
+		return distance;
+	}
+	
 	static class Pair implements Comparable<Pair>{
-		int to;
+		int node;
 		int distance;
-		public Pair(int to, int distance) {
-			this.to = to;
+		public Pair(int node, int distance) {
+			this.node = node;
 			this.distance = distance;
 		}
 		@Override
@@ -110,5 +163,16 @@ public class SSSP {
 			return this.distance - other.distance;
 		}
 	}
-	
+	static class Edge
+	{
+		int a;
+		int b;
+		int w;
+		public Edge(int a, int w, int b) {
+			this.a = a;
+			this.w = w;
+			this.b = b;
+		}
+	}
 }
+
