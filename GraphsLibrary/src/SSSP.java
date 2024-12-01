@@ -91,8 +91,8 @@ public class SSSP {
 					int newDist = edgeCost + distances[u];
 					if (newDist >= 0 && newDist < distances[v]) {
 						distances[v] = newDist;
+						pq.add(new Pair(v, distances[v]));
 					}
-					pq.add(new Pair(v, distances[v]));
 				}
 			}
 		}
