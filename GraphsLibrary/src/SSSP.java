@@ -69,7 +69,7 @@ public class SSSP {
 	 * Complexity: O(E log V)
 	 */
 	static int[] dijkstra (ArrayList<ArrayList<Integer>> g, int[][] costs, int n, int start) {
-		PriorityQueue<Pair> pq = new PriorityQueue<>();
+		PriorityQueue<Pair<Integer>> pq = new PriorityQueue<>();
 		HashSet<Integer> settled = new HashSet<>();
 		int[] distances = new int[n];
 		for (int i = 0; i < n; i++) {
@@ -77,7 +77,7 @@ public class SSSP {
 		}
 		
 		distances[start] = 0;
-		pq.add(new Pair(start, 0));
+		pq.add(new Pair<>(start, 0));
 		
 		while (settled.size() < n) {
 			if (pq.isEmpty()) break;
@@ -91,14 +91,49 @@ public class SSSP {
 					int newDist = edgeCost + distances[u];
 					if (newDist >= 0 && newDist < distances[v]) {
 						distances[v] = newDist;
-						pq.add(new Pair(v, distances[v]));
+						pq.add(new Pair<>(v, distances[v]));
 					}
 				}
 			}
 		}
 		return distances;
 	}
-	
+	/*
+	 * Finds closest distance if path weights need to be multiplied. Calculates in logarithms, using logarithmic property log(a b) = log (a) + log (b)
+	 * Same Dijkstra algorithm, run time is O((n+m) log n)
+	 * The answer is 2^distances[finish]
+	 */
+	static double multiplicativeSP(int start, int finish, ArrayList<ArrayList<Integer>> g, int[][]costs, int n, int m) {
+		PriorityQueue<Pair<Double>> pq = new PriorityQueue<>();
+		HashSet<Integer> settled = new HashSet<>();
+		double[] distances = new double[n];
+		for (int i = 0; i < n; i++) {
+			distances[i] = Integer.MAX_VALUE;
+		}
+		
+		distances[start] = 0;
+		pq.add(new Pair<>(start, 0.0));
+		
+		while (settled.size() < n) {
+			if (pq.isEmpty()) break;
+			int u = pq.poll().node;
+			if (settled.contains(u)) continue;
+			
+			settled.add(u);
+			for (int v : g.get(u)) {
+				if (!settled.contains(v)) {
+					int edgeCost = costs[u][v];
+					double log2 = Math.log(distances[u]); // calculating log in e because if divided by 2 the results will be less accurate
+					double newDist = edgeCost + log2;
+					if (newDist >= 0 && newDist < distances[v]) {
+						distances[v] = newDist;
+						pq.add(new Pair<>(v, distances[v]));
+					}
+				}
+			}
+		}
+		return Math.pow(distances[finish], Math.E);	
+	}
 	/*
 	 * Bellman Ford algorithm: assuming there is no negative cycle, finds shortest paths to all vertices from starting node start.
 	 * Works even when edges are negative.
@@ -107,14 +142,14 @@ public class SSSP {
 	 * 
 	 * Run-time: O(n*m)
 	 */
-	static int[] bellmanFord(int start, int n, ArrayList<ArrayList<Pair>> g) {
-		ArrayList<ArrayList<Pair>> parentList = new ArrayList<>();
+	static int[] bellmanFord(int start, int n, ArrayList<ArrayList<Pair<Integer>>> g) {
+		ArrayList<ArrayList<Pair<Integer>>> parentList = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
 			parentList.add(new ArrayList<>());
 		}
 		for (int i = 0; i < n; i++) {
-			for (Pair edge : g.get(i)) {
-				parentList.get(edge.node).add(new Pair(i, edge.distance));
+			for (Pair<Integer> edge : g.get(i)) {
+				parentList.get(edge.node).add(new Pair<>(i, edge.distance));
 			}
 		}
 		int[] distance = new int[n];
@@ -127,7 +162,7 @@ public class SSSP {
 		distance[start] = 0;
 		for (int i = 0; i < n-1; i++) {
 			for (int u = 0; u < n; u++) {
-				for (Pair p : parentList.get(u)) {
+				for (Pair<Integer> p : parentList.get(u)) {
 					int par = p.node;
 					int cost = p.distance;
 					if (distance[par] != Integer.MAX_VALUE && distance[par] + cost < distance[u]) {
@@ -139,7 +174,7 @@ public class SSSP {
 		}
 		// repeat the same procedure n-th time. If some distance gets smaller, then there must be a negative cycle.s
 		for (int u = 0; u < n; u++) {
-			for (Pair p : parentList.get(u)) {
+			for (Pair<Integer> p : parentList.get(u)) {
 				int par = p.node;
 				int cost = p.distance;
 				if (distance[par] != Integer.MAX_VALUE && distance[par] + cost < distance[u]) {
@@ -151,18 +186,19 @@ public class SSSP {
 		return distance;
 	}
 	
-	static class Pair implements Comparable<Pair>{
+	static class Pair<T extends Comparable<T>> implements Comparable<Pair<T>>{
 		int node;
-		int distance;
-		public Pair(int node, int distance) {
+		T distance;
+		public Pair(int node, T distance) {
 			this.node = node;
 			this.distance = distance;
 		}
 		@Override
-		public int compareTo(Pair other) {
-			return this.distance - other.distance;
+		public int compareTo(Pair<T> other) {
+			return this.distance.compareTo(other.distance);
 		}
 	}
+
 	static class Edge
 	{
 		int a;
