@@ -38,6 +38,7 @@ public class MST {
 		int n = sc.nextInt();
 		int m = sc.nextInt();
 		ArrayList<ArrayList<Pair>> g = new ArrayList<>();
+		ArrayList<Edge> gEdges = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
 			g.add(new ArrayList<>());
 		}
@@ -47,9 +48,10 @@ public class MST {
 			int b = sc.nextInt();
 			g.get(a).add(new Pair(b, w));
 			g.get(b).add(new Pair(a, w));
+			gEdges.add(new Edge(a, w, b));
 		}
 		sc.close();
-		ArrayList<Edge> mst = Prim(0, n, g);
+		ArrayList<Edge> mst = Boruvka(0, n, gEdges);
 		print(mst);
 	}
 	public static void print(ArrayList<Edge> mst) {
@@ -102,6 +104,65 @@ public class MST {
 		}
 		return mst;
 	}
+	
+	// implementation from Internet: https://medium.com/@arst-dev/algorithms-in-c-bor%C5%AFvkas-algorithm-c82239ef3f0c
+	public static ArrayList<Edge> Boruvka(int start, int n, ArrayList<Edge> edges) {
+		ArrayList<Edge> mst = new ArrayList<>(); 
+		Subset[] subsets = new Subset[n];
+		Edge[] cheapest = new Edge[n];
+		for (int i = 0; i < n; i++) {
+			subsets[i] = new Subset(i, 0);
+			cheapest[i] = null;
+		}
+		
+		int currTrees = n;
+		// int totalWeight = 0;
+		while (currTrees > 1) {
+			for (int i = 0; i < n; i++) 
+				cheapest[i] = null;
+			for (Edge edge : edges) {
+				int set1 = Find(subsets, edge.a);
+				int set2 = Find(subsets, edge.b);
+				if (set1 == set2) {
+					continue; // they are in the same component
+				}
+				// if this edge is cheaper than the current cheapest edge in set1, update cheapest[set1]
+				if (cheapest[set1] == null || cheapest[set1].w > edge.w) {
+					cheapest[set1] = edge;
+				} 
+				if (cheapest[set2] == null || cheapest[set2].w > edge.w) {
+					cheapest[set2] = edge;
+				}
+			}
+			// for each vertex check, if the cheapest edge can be added to MST
+			for (int i = 0; i < n; i++) {
+				Edge e = cheapest[i];
+				if (e != null) {
+					int set1 = Find(subsets, e.a);
+					int set2 = Find(subsets, e.b);
+					
+					if (set1 != set2) {
+						mst.add(e);
+						// totalWeight += e.w;
+						Union(subsets, set1, set2);
+						currTrees--;
+					}
+				}
+			}
+		}
+		return mst;
+	}
+	public static ArrayList<Edge> Kruskal(int start, int n, ArrayList<Edge> edges) {
+		return null;
+	}
+	public static class Subset {
+		public int root;
+		public int weight;
+		public Subset(int root, int weight) {
+			this.root = root;
+			this.weight = weight;
+		}
+	}
 	public static class Pair {
 		int a;
 		int b;
@@ -109,6 +170,26 @@ public class MST {
 			this.a = a;
 			this.b = b;
 		}
+	}
+	private static int Find(Subset[] subsets, int i) {
+		if (subsets[i].root != i) {
+			subsets[i].root = Find(subsets, subsets[i].root);
+		}
+		return subsets[i].root;
+	}
+	private static void Union (Subset[] subsets, int x, int y) {
+		int xroot = Find(subsets, x);
+		int yroot = Find(subsets, y);
+		if (subsets[xroot].weight < subsets[yroot].weight)
+            subsets[xroot].root = yroot;
+        else if (subsets[xroot].weight > subsets[yroot].weight)
+            subsets[yroot].root = xroot;
+        else
+        {
+            // If ranks are the same, make one as root and increment its rank by one
+            subsets[yroot].root = xroot;
+            subsets[xroot].weight++;
+        }
 	}
 	public static class Edge implements Comparable<Edge>{
 		int a;
