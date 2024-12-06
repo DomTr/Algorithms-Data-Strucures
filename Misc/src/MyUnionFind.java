@@ -17,13 +17,17 @@ public class MyUnionFind {
 	public boolean same(int u, int v) {
 		return parent[u] == parent[v];
 	}
+	// Complexity: O(min(|ZHK[u]|, |ZHK[v]|)), where ZHK[i] is the connected component
+	// If it is done on the whole set, the amortized complexity is O(n log n)
+	// if ZHK'(u) is the new connected component, |ZHK'[u]| = |ZHK[u]| + |ZHK[v]| >= |ZHK[u]| + |ZHK[u]| = 2|ZHK[u]| 
 	public void union(int u, int v) {
 		if (members.get(u).size() > members.get(v).size()) {
 			swap(u, v);
 		}
-		for (int x : members.get(v)) {
-			parent[x] = parent[u];
-			members.get(u).add(x);
+		// merge the smaller set to the bigger one. |ZHK[u]| >= |ZHK[v]|
+		for (int x : members.get(u)) {
+			parent[x] = parent[v];
+			members.get(v).add(x);
 		}
 		
 	}
