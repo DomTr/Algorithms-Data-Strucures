@@ -11,6 +11,9 @@ public class Roads {
 	 2 4 3 1
 	 4 5 1 5
 	 5 1 8 8
+	 Description: given an undirected graph and two sets of edges: one is edges when driving with summer tires, the other is edges driving with winter tires,
+	 output the minimal time required to travel from city 0 to city n-1. It is not important with what kind of tires n-1 is reached. It takes time T to change tires in a city.
+	 You start at city 0 with summer tires.
 	 */
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
