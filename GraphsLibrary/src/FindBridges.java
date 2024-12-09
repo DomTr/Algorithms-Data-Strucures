@@ -89,5 +89,33 @@ public class FindBridges {
 	    }
 	    return new int[] {bridges, articulationPoints};
 	  }
-	
+	 
+	 public static int bottleneck2(int n, int m, ArrayList<ArrayList<Integer>> E){
+	      int cnt = 0;
+	      for (int x = 0; x < n; x++) {
+	        for (int y : E.get(x)) {
+	          boolean[] visited = new boolean[n];
+	          int seen = 0;
+	          seen = dfs(0, visited, E, x, y, 0);
+	          if (seen < n) {
+	            cnt++;
+	          }
+	        }
+	        
+	      }
+	        return cnt/2;
+	   }
+	   public static int dfs(int u, boolean[] visited, ArrayList<ArrayList<Integer>> E, int forbiddenX, int forbiddenY, int seen) {
+	      visited[u] = true;
+	      seen = seen + 1;
+	      for (int v : E.get(u)) {
+	        if (u == forbiddenX && v == forbiddenY || u == forbiddenY && v == forbiddenX) {
+	          continue;
+	        }
+	        if (!visited[v]) {
+	          seen = dfs(v, visited, E, forbiddenX, forbiddenY, seen);
+	        }
+	      }
+	      return seen;
+	  }
 }
