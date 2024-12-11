@@ -185,7 +185,79 @@ public class SSSP {
 		}
 		return distance;
 	}
-	
+	// some weight function that changes cyclically mod n
+	public static int c(int i, int j, int n) {
+		return (i+j) % n;
+	}
+	public static int[] rotatingWeights(int start, int n, ArrayList<ArrayList<Pair<Integer>>> g) {
+		ArrayList<ArrayList<Pair<Integer>>> newGraph = new ArrayList<>();
+		
+		for (int t = 0; t < n; t++) {
+			for (int i = 0; i < n; i++) {
+				ArrayList<Pair<Integer>> a = new ArrayList<>();
+				for (int j = 0; j < n; j++) {
+					if (i == j) continue;
+					a.add(new Pair<Integer>(j, (t+1)%n));
+				}
+				newGraph.add(a);
+			}
+		}
+		
+		ArrayList<ArrayList<Pair<Integer>>> parentList = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			parentList.add(new ArrayList<>());
+		}
+		for (int i = 0; i < n; i++) {
+			for (Pair<Integer> edge : g.get(i)) {
+				parentList.get(edge.node).add(new Pair<>(i, edge.distance));
+			}
+		}
+		int[] distance = new int[n*n];
+		//int[] predecessor = new int[n];
+		for (int i = 0; i < n*n; i++) {
+			distance[i] = Integer.MAX_VALUE;
+			//predecessor[i] = -1;
+		}
+		
+		distance[start] = 0;
+		for (int i = 0; i < n-1; i++) {
+			for (int u = 0; u < n; u++) {
+				for (Pair<Integer> p : parentList.get(u)) {
+					int par = p.node;
+					int cost = p.distance;
+					if (distance[par] != Integer.MAX_VALUE && distance[par] + cost < distance[u]) {
+						distance[u] = distance[par] + cost;
+						//predecessor[u] = par;
+					}
+				}
+			}
+		}
+		// repeat the same procedure n-th time. If some distance gets smaller, then there must be a negative cycle.s
+		for (int t = 1; t < n*n; t++) {
+			for (int u = 0; u < n*n; u++) {
+				for (int from = 0; from < n; from++) {
+					if (u == from) continue;
+					int weight = c(from, u, (t+1)%n);
+					if (distance[u] > weight + distance[from]) {
+						distance[u] = weight + distance[from];
+					}
+				}
+			}
+//			for (Pair<Integer> p : parentList.get(u)) {
+//				int par = p.node;
+//				int cost = p.distance;
+//				if (distance[par] != Integer.MAX_VALUE && distance[par] + cost < distance[u]) {
+//					// There is a negative cycle
+//					return null;
+//				}
+//			}
+		}
+		int minimalDistance = Integer.MAX_VALUE;
+		for (int t = 1; t < n; t++) {
+			minimalDistance = Math.min(minimalDistance, distance[1 + t*n]);
+		}
+		return new int[] {minimalDistance};
+	}
 	static class Pair<T extends Comparable<T>> implements Comparable<Pair<T>>{
 		int node;
 		T distance;
