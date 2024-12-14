@@ -1,4 +1,9 @@
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+
+import dataStructures.UnionFind;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Scanner;
@@ -51,7 +56,7 @@ public class MST {
 			gEdges.add(new Edge(a, w, b));
 		}
 		sc.close();
-		ArrayList<Edge> mst = Boruvka(0, n, gEdges);
+		ArrayList<Edge> mst = Kruskal(0, n, gEdges);
 		print(mst);
 	}
 	public static void print(ArrayList<Edge> mst) {
@@ -153,7 +158,28 @@ public class MST {
 		return mst;
 	}
 	public static ArrayList<Edge> Kruskal(int start, int n, ArrayList<Edge> edges) {
-		return null;
+		edges.sort(new Comparator<Edge> () {
+
+			@Override
+			public int compare(MST.Edge o1, MST.Edge o2) {
+				// TODO Auto-generated method stub
+				return o1.w - o2.w;
+			}
+			
+		});;
+		UnionFind unionFind = new UnionFind(n);
+		ArrayList<Edge> mst = new ArrayList<Edge>();
+		int total = 0;
+		for (Edge e : edges) {
+			int a = e.a;
+			int b = e.b;
+			int w = e.w;
+			if (unionFind.same(a, b)) continue;
+			mst.add(e);
+			unionFind.union(a, b);
+			total += w;
+		}
+		return mst;
 	}
 	public static class Subset {
 		public int root;
