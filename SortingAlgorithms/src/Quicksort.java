@@ -72,7 +72,6 @@ public class Quicksort {
 		}
 		return r;
 	}
-	// For test case 3 doesn't work.
 	public static int partitionHoare(int[] a, int l, int r) {
 		// Find pivot and swap it to the right place
 		// Have left and right pointer. Find a suitable pair (i, j) with a[i] > p && a[j] <= p to swap with
