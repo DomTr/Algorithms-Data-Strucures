@@ -25,6 +25,9 @@ public class Quickselect {
 	 * @return k-th smallest element of the array
 	 */
 	static int kthSmallest(int n, int k, int[] a) {
+				if (k >= a.length || k < 0) {
+					throw new IllegalArgumentException("Index k is out of bounds: " + k);
+				}
 				return quickselect(n, k, 0, n-1, a);
 	}
 	/**
