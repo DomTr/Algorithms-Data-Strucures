@@ -68,23 +68,54 @@ public class Quickselect {
 		// 5. if k = i: return a[k]
 		// 6. else if k < i: return quickselectLinear(i, a[0...i-1], k)
 		// 7. else return quickselectLinear(n-i, a[i+1...length], k-i)
+		// https://people.csail.mit.edu/rivest/pubs/BFPRT73.pdf
 		
-		// Steps 1 and 2:
+		// Steps 1 and 2: O(n). Median of <=5 elements could be found in constant time. In this implementation the array of segment of <= 5 elements is sorted and then the element in the middle is returned.
+		// In the better implementations no sorting would be necessary, but since sorting is performed on the initial array, maybe next time it is easier to sort and to find the median of each sub-group.
+		// + cn
 		if (n == 1) {
 			return a[0];
 		}
 		int[] A = mediansOfSubgroups(n, a);
-		int p = quickselectLinear(A.length, A.length/2, A); // find median
-		int i = partitionHoare(a, 0, n-1, p);
+		// Step 3:
+		int p = quickselectLinear(A.length, A.length/2, A); // find median +T(n/5)
+		
+		// Step 4: 
+		int i = partitionHoare(a, 0, n-1, p); // cn
+		// Final steps 5, 6, 7
 		if (k == i) return a[k];
 		else if (k < i) {
 			int[] newArray = Arrays.copyOfRange(a, 0, i);
-			return quickselectLinear(newArray.length, k, newArray);
+			return quickselectLinear(newArray.length, k, newArray); // <= + T(7/10n)
 		}
 		else {
 			int[] newArray = Arrays.copyOfRange(a, i, n);
-			return quickselectLinear(newArray.length, k-i, newArray);
+			return quickselectLinear(newArray.length, k-i, newArray); // <= + T(7/10n)
 		}
+		
+		// IN TOTAL: T(n) <= cn + T(n/5) + T(7/10n)
+		/*
+		 * Claim: T(n) <= 10cn
+		 * I.B. T(1) <= c1n <= 10cn for our chosen c > 0
+		 * I.H. for all k <= n-1 T(k) <= 10ck
+		 * I.S. T(n) <= cn + T(n/5) + T(7/10n) <{I.H.}= cn + cn/5 * 10 + cn7/10 * 10 = cn + 2cn + 7cn = 10cn.
+		 *  WHERE DOES 7/10 n come from? - It is the longest possible length of the array which is left after not considering medians and what is bigger or smaller than them.
+		 *  If we take groups of 5 and have that k < i, we know that k-th element is less than every median of the first half of the median array, i.e. it is bigger than half of the medians. 
+		 *  Since every median m has additional 2 elements which are bigger than m, we must have
+		 *  that k-th smallest number is less than 1/2 * (1 + 2)/5n = 3/10 n elements of the whole array, i.e. we have 7/10n array left to explore.
+		 *  Same reasoning applies in the case of k > i. Then we don't have to consider all medians of the first half of the 5-groups and 2 elements that come before that median and for each median in the second half we don't have to consider next 2 elements.
+		 *  
+		 * If we divide in subgroups of length 3 or 4, this will not work.
+		 * Then we would have to prove that T(n) <= kcn for some k. For the case of 3:
+		 * we know that half of the medians don't work and for each median there is an element in the 3-group which we can throw away, i.e. we don't have to consider 1/2 * (1+1)/3 = 1/3 elements, then we have to consider the rest: 1 - 1/3 = 2/3 elements.
+		 * However, we have that T(n) <= cn + T(n/3) + T(2/3n). And in this case we won't be able to find any k:
+		 * T(n) <= cn + T(n/3) + T(2/3n) <{I.H.}= cn + kcn/3 + 2kcn/3 = cn + kcn
+		 * 
+		 * What happens if we divide in groups of 10 or more? - We will be able to find such k, however, the finding median of each subgroup logic will be much more difficult to implement for arrays with bigger length.
+		 * If we take division in groups of 10, we have that we can cancel 1/2*1/10*5n = 5/20n elements, then we have 15/20n elements left to check.
+		 * T(n) <= cn + T(n/10) + T(15/20n) <{I.H.}= cn + ckn/10 + ckn15/20 = cn + ckn17/20  <= ckn for for k >= 20/3, i.e. for some k = 7.
+		 * We can divide in bigger subgroups, then finding median part of each sub-group is slower, but T(n) has a smaller constant factor. 
+		 */
 	}
 	
 	public static int[] mediansOfSubgroups(int n, int[] a) {
