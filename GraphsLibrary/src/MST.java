@@ -1,6 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 
 import dataStructures.UnionFind;
@@ -141,15 +140,15 @@ public class MST {
 		});;
 		UnionFind unionFind = new UnionFind(n);
 		ArrayList<Edge> mst = new ArrayList<Edge>();
-		int total = 0;
+		//int total = 0;
 		for (Edge e : edges) {
 			int a = e.a;
 			int b = e.b;
-			int w = e.w;
+			//int w = e.w;
 			if (unionFind.same(a, b)) continue;
 			mst.add(e);
 			unionFind.union(a, b);
-			total += w;
+			//total += w;
 		}
 		return mst;
 	}
