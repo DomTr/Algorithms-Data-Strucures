@@ -28,7 +28,7 @@ public class HeapSort {
 		for (int i = n-1; i >= 0; i--) {
 			a[i] = extractMax(H, i+1);
 		}
-	}	
+	}
 	public static int[] heapify (int[] a, int n) {
 		int[] H = new int[n];
 		H[0] = a[0];
