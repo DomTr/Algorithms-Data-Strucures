@@ -1,10 +1,12 @@
 package threads;
 import counters.Counter;
 import counters.MyCounter;
+// Works in Robin-Round fashion. First thread-0 increments, then thread-1, thread-2, ..., thread-(n-1), then again thread-0, thread-1, ...
+// The main thing why this works is because of static MyCounter nextThreadId object which is shared among all instances of FairThreadCounter class.
+// On nextThreadId threads always synchronize.
 public class FairThreadCounter extends ThreadCounter {
     public static MyCounter nextThreadId = new MyCounter(10); // random value initially, has to be static because it is
     // global for all FairThreadCounters
-
     public FairThreadCounter(Counter counter, int id, int numThreads, int numIterations) {
         super(counter, id, numThreads, numIterations);
         nextThreadId.n = numThreads;
