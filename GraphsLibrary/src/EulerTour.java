@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -9,10 +12,11 @@ public class EulerTour {
 	/*
 	 * Given a graph finds an Euler-tour or returns that there is none.
 	 */
-	static ArrayList<ArrayList<Integer>> g;
-
-	static ArrayList<ArrayList<Integer>> dirG; // needed, when graph is directed.
-	static ArrayList<ArrayList<Integer>> revG; // needed, when graph is directed.
+	int n;
+	int m;
+	ArrayList<ArrayList<Integer>> g;
+	ArrayList<ArrayList<Integer>> dirG; // needed, when graph is directed.
+	ArrayList<ArrayList<Integer>> revG; // needed, when graph is directed.
 	/*
 	 * 
 	 * 4 4 
@@ -27,22 +31,42 @@ public class EulerTour {
 	 * 
 	 * hasDirectedEulerianWalk() => false
 	 */
-	static boolean[][] adjMatr;
-	static int n;
-	static int m;
-	static boolean[] visited;
-	static ArrayList<Integer> sol;
-	static Deque<Integer> cache = new ArrayDeque<>();
-
+	boolean[][] adjMatr;
+	boolean[] visited;
+	ArrayList<Integer> sol;
+	Deque<Integer> cache;
+	public EulerTour(int n, int m, ArrayList<ArrayList<Integer>> g, ArrayList<ArrayList<Integer>> dirG, ArrayList<ArrayList<Integer>> revG, 
+			boolean[][] adjMatr) {
+		this.n = n;
+		this.m = m;
+		this.g = g;
+		this.dirG = dirG;
+		this.revG = revG;
+		this.adjMatr = adjMatr;
+		this.visited = new boolean[n];
+		sol = new ArrayList<>();
+		cache = new ArrayDeque<>();
+	}
+	// TODO: this will enable more efficient testing
+	public static EulerTour readEulerTour(String filePath) {
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line); // Output each line from the file
+            }
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle potential IOExceptions
+        }
+		return null;
+	}
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		Scanner sc = new Scanner(System.in);
-		n = sc.nextInt();
-		m = sc.nextInt();
-		g = new ArrayList<>();
-		adjMatr = new boolean[n][n];
-		dirG = new ArrayList<>();
-		revG = new ArrayList<>();
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+		ArrayList<ArrayList<Integer>> g = new ArrayList<>();
+		boolean[][] adjMatr = new boolean[n][n];
+		ArrayList<ArrayList<Integer>> dirG = new ArrayList<>();
+		ArrayList<ArrayList<Integer>> revG = new ArrayList<>();
 		for (int i = 0; i < n; i++) {
 			g.add(new ArrayList<>());
 			dirG.add(new ArrayList<>());
@@ -61,38 +85,39 @@ public class EulerTour {
 			revG.get(b).add(a);
 		}
 		sc.close();
-		boolean hasEulerianWalk = hasDirectedEulerianWalk();
+		EulerTour euler = new EulerTour(n, m, g, dirG, revG, adjMatr);
+		boolean hasEulerianWalk = euler.hasDirectedEulerianWalk();
 		System.out.println(hasEulerianWalk);
 		// solve();
-		// System.out.println(sol.toString());
+		//System.out.println(sol.toString());
 	}
 
 	public EulerTour(ArrayList<ArrayList<Integer>> g, ArrayList<ArrayList<Integer>> dirG,
 			ArrayList<ArrayList<Integer>> revG, int n, int m) {
 		
 	}
-	public static boolean hasDirectedEulerianWalk(ArrayList<ArrayList<Integer>> g, ArrayList<ArrayList<Integer>> dirG,
-			ArrayList<ArrayList<Integer>> revG, int n, int m) {
+//	public static boolean hasDirectedEulerianWalk(ArrayList<ArrayList<Integer>> g, ArrayList<ArrayList<Integer>> dirG,
+//			ArrayList<ArrayList<Integer>> revG, int n, int m) {
+//		// check if g is connected (when directions are ignored)
+//		// check whether there is at most one vertex v s.t. inDeg(i) - outDeg(i) > 0 and
+//		// at most one such v s.t. outDeg(i) - inDeg(i) > 0
+//		// and if there is at least one v s.t. |inDeg(i) - outDeg(i)| >= 2, then it is
+//		// impossible
+//		
+//		return isConnected() && checkInOutDeg();
+//
+//	}
+	public boolean hasDirectedEulerianWalk() {
 		// check if g is connected (when directions are ignored)
 		// check whether there is at most one vertex v s.t. inDeg(i) - outDeg(i) > 0 and
 		// at most one such v s.t. outDeg(i) - inDeg(i) > 0
 		// and if there is at least one v s.t. |inDeg(i) - outDeg(i)| >= 2, then it is
 		// impossible
-		
-		return isConnected() && checkInOutDeg();
-
-	}
-	public static boolean hasDirectedEulerianWalk() {
-		// check if g is connected (when directions are ignored)
-		// check whether there is at most one vertex v s.t. inDeg(i) - outDeg(i) > 0 and
-		// at most one such v s.t. outDeg(i) - inDeg(i) > 0
-		// and if there is at least one v s.t. |inDeg(i) - outDeg(i)| >= 2, then it is
-		// impossible
 		return isConnected() && checkInOutDeg();
 
 	}
 
-	public static boolean checkInOutDeg() {
+	public boolean checkInOutDeg() {
 		int cntMoreIn = 0, cntMoreOut = 0, inDeg, outDeg;
 		for (int i = 0; i < n; i++) {
 			inDeg = revG.get(i).size();
@@ -107,7 +132,7 @@ public class EulerTour {
 		return cntMoreIn <= 1 && cntMoreOut <= 1;
 	}
 
-	public static void solve() {
+	public void solve() {
 		sol = new ArrayList<>();
 		if (n == 1) {
 			sol.add(0);
@@ -120,7 +145,7 @@ public class EulerTour {
 
 	}
 
-	public static ArrayDeque<Integer> exploreFast(int v, ArrayDeque<Integer> acc) {
+	public ArrayDeque<Integer> exploreFast(int v, ArrayDeque<Integer> acc) {
 		visited[v] = true;
 		acc.add(v);
 		for (int u : g.get(v)) {
@@ -132,7 +157,7 @@ public class EulerTour {
 		return acc;
 	}
 
-	public static void exploreSlow(int v) {
+	public void exploreSlow(int v) {
 		LinkedList<Integer> lst = new LinkedList<>();
 		lst.add(v);
 		while (!lst.isEmpty()) {
@@ -148,7 +173,7 @@ public class EulerTour {
 
 	}
 
-	public static ArrayList<Integer> euler_tour2(int start) {
+	public ArrayList<Integer> euler_tour2(int start) {
 		Stack<Integer> st = new Stack<>();
 		ArrayList<Integer> ans = new ArrayList<>();
 		st.add(start);
@@ -173,12 +198,12 @@ public class EulerTour {
 		return ans;
 	}
 
-	public static boolean evenDegree() {
+	public boolean evenDegree() {
 		boolean allEven = g.stream().map(m -> m.size()).filter(x -> x % 2 == 1).findAny().orElse(-1) == -1;
 		return allEven;
 	}
 
-	public static boolean isConnected() {
+	public boolean isConnected() {
 		visited = new boolean[n];
 		dfs(0);
 		for (int i = 0; i < n; i++) {
@@ -188,7 +213,7 @@ public class EulerTour {
 		return true;
 	}
 
-	public static void dfs(int v) {
+	public void dfs(int v) {
 		visited[v] = true;
 		for (int u : g.get(v)) {
 			if (!visited[u]) {
