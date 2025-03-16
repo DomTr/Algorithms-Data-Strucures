@@ -1,4 +1,3 @@
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ class MSTTest {
 	@Test
 	void test() {
 		ArrayList<Edge> edges = new ArrayList<>();
-		int n = 2, m = 2;
+		int n = 2;
 		edges.add(new Edge(0, 10, 1));
 		edges.add(new Edge(0, 2, 1));
 		ArrayList<Edge> actualMst = MST.Kruskal(0, n, edges);
