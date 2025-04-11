@@ -37,4 +37,12 @@ public class SegmentTree {
         }
         return res;
     }
+    public void modify(int idx, int val) {
+    	idx+=n;
+    	data[idx] = val;
+    	idx/=2;
+    	for(;idx>0;idx/=2) {
+    		data[idx] = f(data[2*idx+1], data[2*idx+2]);
+    	}
+    }
 }
