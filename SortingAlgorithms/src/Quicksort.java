@@ -60,7 +60,7 @@ public class Quicksort {
 	 */ 
 	static int choosePivotMedianFrom3(int[] a, int l, int r) {
 		int interval = (r-l);
-		if (interval+1<= 2) {
+		if (interval <= 1) {
 			return l+interval;
 		}
 		int x = a[l], y = a[l + interval/2], z = a[r];
@@ -114,11 +114,6 @@ public class Quicksort {
 		swap(a, i, j);
 		return i;
 	}
-	public static void swap(int[] a, int i, int j) {
-		int tmp = a[i];
-		a[i] = a[j];
-		a[j] = tmp;
-	}
 	public static int partition(int[] a, int l, int r) {
 		int p = a[r]; // choosing the last element as pivot
 		int k = numberOfLEQElements(a, p, l, r-1);
@@ -151,6 +146,11 @@ public class Quicksort {
 			}
 		}
 		return cnt;
+	}
+	public static void swap(int[] a, int i, int j) {
+		int tmp = a[i];
+		a[i] = a[j];
+		a[j] = tmp;
 	}
 	public static void printArray(int[] a, int n) {
 		System.out.print("Sorted array: ");
