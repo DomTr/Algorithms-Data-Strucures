@@ -1,4 +1,4 @@
-package SlidingWindow;
+package slidingWindow;
 
 import static org.junit.jupiter.api.Assertions.*;
 
