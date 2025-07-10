@@ -34,10 +34,7 @@ public class ExecForkJoin extends RecursiveTask<Integer> {
 	public static void main(String[] args) {
 		int[] arr = new int[] {15, 12, 99, 89, 1, -10, 29, -100};
 		ExecForkJoin tp = new ExecForkJoin(0, arr.length, arr);
-		try (ForkJoinPool efj = new ForkJoinPool()) {
-			int res = efj.invoke(tp);
-			System.out.println(res);
-		}
+
 
 	}
 
